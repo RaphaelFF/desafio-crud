@@ -53,7 +53,8 @@ Acesso Restrito: Apenas para Administradores.
 6. Histórico (📜 Histórico)
 Rastreabilidade: Exibe a tabela completa de todas as Entradas e Saídas de estoque, com data, hora e usuário responsável.
 
-obs: não tive tempo para fazer a documentação completa. 
+obs: não tive tempo para fazer a documentação completa pois
+o desafio caio na mesma semana de prova na faculdade.
 
 
 
