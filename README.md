@@ -4,7 +4,7 @@
 ---
 
 # Acessar projeto
-<h4 align="center"><a href="https://cafe-vida.netlify.app/">Clique para visitar o projeto</a></h4>
+<h4 align="center"><a href="https://desafio-crud.streamlit.app">Clique para visitar o projeto</a></h4>
 
 ---
 ##  Sobre o Projeto
