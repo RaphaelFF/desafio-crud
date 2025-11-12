@@ -3,7 +3,10 @@
 
 ---
 
+# Acessar projeto
+<h4 align="center"><a href="https://cafe-vida.netlify.app/">Clique para visitar o projeto</a></h4>
 
+---
 ##  Sobre o Projeto
 
 O **Sistema de Gestão de Estoque** é uma aplicação web completa, desenvolvida para proporcionar controle total, análise visual e funcionalidade de relatórios preditivos para o inventário. O projeto se integra ao Supabase para garantir a persistência e segurança dos dados.
