@@ -25,9 +25,12 @@ O **Sistema de Gestão de Estoque** é uma aplicação web completa, desenvolvid
 ## 🚀 Tecnologias Utilizadas
 
 **Frontend/App** | Python (Streamlit) 
-**Backend/DB** | Supabase (PostgreSQL) |
-**Análise de Dados** | Pandas / Plotly | Manipulação de dados, geração de DataFrames e gráficos dinâmicos. |
-**Segurança** | hashlib | Hashing das senhas de usuários. |
+
+**Backend/DB** | Supabase (PostgreSQL) 
+
+**Análise de Dados** | Pandas / Plotly | Manipulação de dados, geração de DataFrames e gráficos dinâmicos.
+
+**Segurança** | hashlib | Hashing das senhas de usuários.
 
 ---
 
@@ -40,14 +43,14 @@ Foco Analítico: Veja instantaneamente os KPIs e os gráficos Plotly de distribu
 2. Gerenciar Produtos (📦 Estoque)
 Filtros Avançados: Utilize a barra lateral para aplicar filtros em tempo real por Busca de Nome/ID, Status do Estoque, Fornecedor ou Localização.
 
-Download: O botão de Download CSV abaixo da tabela permite exportar os dados filtrados com um único clique.
+3 Download: O botão de Download CSV abaixo da tabela permite exportar os dados filtrados com um único clique.
 
-3. Cadastro (➕ Cadastro)
+4. Cadastro (➕ Cadastro)
 Acesso Restrito: Apenas para Administradores.
 
-Formulário com validação ativa para garantir a integridade dos dados (preço > 0, mínimo < máximo).
+5. Formulário com validação ativa para garantir a integridade dos dados (preço > 0, mínimo < máximo).
 
-4. Histórico (📜 Histórico)
+6. Histórico (📜 Histórico)
 Rastreabilidade: Exibe a tabela completa de todas as Entradas e Saídas de estoque, com data, hora e usuário responsável.
 
 
