@@ -1,11 +1,5 @@
-# 🛍️ Sistema de Gerenciamento de Produtos
+#  Sistema de Gestão de Estoque
 
-<div align="center">
-
-
-Sistema de Gestão de Estoque
-
-</div>
 
 ---
 
@@ -56,25 +50,6 @@ Formulário com validação ativa para garantir a integridade dos dados (preço 
 4. Histórico (📜 Histórico)
 Rastreabilidade: Exibe a tabela completa de todas as Entradas e Saídas de estoque, com data, hora e usuário responsável.
 
-📁 Estrutura do Projeto
-desafio-crud/
-├── .streamlit/
-│   └── secrets.toml             # Credenciais do Supabase e usuário admin
-├── src/
-│   ├── paginas/
-│   │   ├── cadastro.py          # Lógica de interface CREATE
-│   │   ├── dashboard.py         # Lógica de visualização com Pandas e Plotly
-│   │   ├── estoque.py           # Lógica de interface READ/UPDATE/DELETE e Filtros
-│   │   ├── historico.py         # Visualização do log de movimentações
-│   │   ├── movimentacoes.py     # Lógica de entrada/saída de estoque
-│   │   └── configuracoes.py     # Página de status e admin (Acesso restrito)
-│   ├── gestor_estoque.py        # Camada de Lógica de Negócio e Validação
-│   └── supabase_manager.py      # Camada de Conexão e Queries (DB/Cache)
-├── app.py                       # Ponto de Entrada / Router principal Streamlit
-├── requirements.txt             # Dependências Python (streamlit, pandas, plotly, supabase)
-└── README.md                    # Este arquivo
-
----
 
 
 
