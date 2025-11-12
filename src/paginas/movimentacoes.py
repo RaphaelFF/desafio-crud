@@ -1,5 +1,3 @@
-# Arquivo: src/paginas/movimentacoes.py (CORRIGIDO PARA SUPABASE E TIPOS NUMÉRICOS)
-
 import streamlit as st
 import pandas as pd
 import time
@@ -13,14 +11,13 @@ def renderizar_movimentacoes(estoque_manager, tipo_usuario: str):
         st.error("Acesso negado. Apenas usuários autenticados podem realizar movimentações e edições.")
         return
 
-    # 1. Obter dados e montar opções de seleção (usando gerar_relatorio)
+    # Obter dados e montar opções de seleção (usando gerar_relatorio)
     itens = estoque_manager.gerar_relatorio()
     
     # Criar um dicionário de opções para o Selectbox
     opcoes_estoque = {row["Código"]: f"{row['Código']} - {row['nome']} (Qtd: {row['Quantidade']})" 
                       for index, row in itens.iterrows()}
-    # Ajuste: O valor inicial vazio no selectbox deve ser o primeiro item da lista, 
-    # ou um valor que garanta que o format_func funcione corretamente.
+
     opcoes_lista = [None] + list(opcoes_estoque.keys()) 
     
     
@@ -32,7 +29,7 @@ def renderizar_movimentacoes(estoque_manager, tipo_usuario: str):
     ])
 
     
-    # --- Tab Movimentação (Entrada/Saída) ---
+    # Tab Movimentação (Entrada/Saída)
     with tab_movimentacao:
         st.markdown("### Registrar Entrada ou Saída")
         
@@ -71,7 +68,7 @@ def renderizar_movimentacoes(estoque_manager, tipo_usuario: str):
                     st.rerun()
                 
     
-    # --- Tab Edição Detalhada ---
+    # Tab Edição Detalhada
     with tab_edicao:
         st.markdown("### 📝 Edição Detalhada")
         
@@ -91,7 +88,7 @@ def renderizar_movimentacoes(estoque_manager, tipo_usuario: str):
         if item_edit:
             st.info(f"Editando item: **{item_edit['nome']}**")
             
-            # Mapeamento de campos. Usamos "number" para ambos e tratamos o tipo dentro do loop.
+            # Mapeamento de campos.
             campos_para_edicao = {
                 "Nome": {"campo_db": "nome", "tipo": "text", "valor_atual": item_edit.get("nome", "")},
                 "Unidade": {"campo_db": "unidade", "tipo": "select", "opcoes": ["PÇ", "M", "KG", "UN", "CX"], "valor_atual": item_edit.get("unidade", "PÇ")},
@@ -115,18 +112,17 @@ def renderizar_movimentacoes(estoque_manager, tipo_usuario: str):
                     elif meta['tipo'] == 'number':
                         is_price_field = meta['campo_db'] == 'preco'
                         
-                        # Garante que os argumentos do number_input são do mesmo tipo
                         if is_price_field:
                             input_step = 0.01
                             input_type_func = float
-                        else: # minimo, maximo
+                        else: 
                             input_step = 1
                             input_type_func = int
 
                         novos_valores[label] = st.number_input(
                             label, 
-                            value=input_type_func(meta['valor_atual']), # Converte o valor atual (pode ser float X.0)
-                            min_value=input_type_func(meta.get('min_value')), # Converte o valor mínimo
+                            value=input_type_func(meta['valor_atual']), 
+                            min_value=input_type_func(meta.get('min_value')), 
                             step=input_step, 
                             key=f"edit_{meta['campo_db']}"
                         )
@@ -152,7 +148,7 @@ def renderizar_movimentacoes(estoque_manager, tipo_usuario: str):
                     st.warning("Nenhuma alteração detectada para salvar.")
 
 
-    # --- Tab Exclusão ---
+    # Tab Exclusão
     with tab_exclusao:
         st.markdown("### 🗑️ Exclusão Permanente de Item")
         

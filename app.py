@@ -1,14 +1,8 @@
-# Arquivo: app.py (Ponto de entrada - Versão de Demonstração com Supabase)
-
 import streamlit as st
 import pandas as pd
 import time
 import json
-
-# IMPORTA A NOVA CLASSE DE CONEXÃO E LÓGICA
 from src.supabase_manager import SupabaseManager 
-
-# Importa as funções de renderização das páginas
 from src.paginas.dashboard import renderizar_dashboard
 from src.paginas.estoque import renderizar_estoque
 from src.paginas.cadastro import renderizar_cadastro
@@ -79,11 +73,9 @@ st.markdown("""
 
 def main():
     
-    # ----------------------------------------------------
-    # 1. INICIALIZAÇÃO E CONEXÃO COM SUPABASE
-    # ----------------------------------------------------
+    # INICIALIZAÇÃO E CONEXÃO COM SUPABASE
+
     
-    # Configurações de sessão para a Demonstração (Correção do AttributeError)
     if "autenticado" not in st.session_state:
         st.session_state.autenticado = False
     if "usuario_atual" not in st.session_state:
@@ -107,18 +99,18 @@ def main():
         except KeyError:
             st.error("❌ Erro de Conexão: As credenciais do Supabase não foram encontradas. Crie o arquivo `.streamlit/secrets.toml`.")
             st.session_state.db_conectado = False
-            return # Interrompe a execução
+            return 
         except Exception as e:
             st.error(f"❌ Erro ao inicializar o banco de dados: {e}")
             st.session_state.db_conectado = False
-            return # Interrompe a execução
+            return 
 
-    # Alias para o gerenciador (que agora é o SupabaseManager)
+    # Alias para o gerenciador
     estoque_manager = st.session_state.estoque_manager 
     
-    # ----------------------------------------------------
-    # 2. TELA DE INTRODUÇÃO (DEMONSTRAÇÃO)
-    # ----------------------------------------------------
+ 
+    # TELA DE INTRODUÇÃO (DEMONSTRAÇÃO)
+  
     if not st.session_state.autenticado:
         st.markdown("<h1 style='text-align: center; color: #1f77b4;'>📦 Sistema de Gestão de Estoque</h1>", unsafe_allow_html=True)
        
@@ -144,11 +136,10 @@ def main():
                 st.session_state.autenticado = True
                 st.rerun()
 
-        return # Interrompe a execução até que o botão seja clicado
+        return
     
-    # ----------------------------------------------------
-    # 3. INTERFACE PRINCIPAL
-    # ----------------------------------------------------
+ 
+    # INTERFACE PRINCIPAL
     
     # Sidebar e Filtros
     with st.sidebar:
@@ -203,7 +194,7 @@ def main():
         "🔄 Movimentações", "📊 Relatórios", "📜 Histórico", "⚙️ Configurações"
     ])
     
-    # Roteamento (chamando as funções dos módulos de página)
+    # Roteamento 
     
     with tab1:
         renderizar_dashboard(estoque_manager)

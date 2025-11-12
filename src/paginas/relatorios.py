@@ -1,5 +1,3 @@
-# Arquivo: src/paginas/relatorios.py (CORRIGIDO PARA SUPABASE E CURVA ABC)
-
 import streamlit as st
 import pandas as pd
 import plotly.express as px
@@ -8,13 +6,10 @@ from datetime import datetime, timedelta
 import random
 from typing import List, Dict, Any
 
-# --- Funções Auxiliares de Cálculo ---
+# Funções Auxiliares de Cálculo
 
 def calcular_curva_abc(df_estoque: pd.DataFrame) -> pd.DataFrame:
     """Calcula a Curva ABC baseada no Valor Total de cada item."""
-    
-    # 1. Preparar o DataFrame para cálculo numérico
-    # Gerar relatorio garante que df_estoque tenha todas as colunas necessárias e o 'Valor Total'
     df = df_estoque.copy()
     
     if df.empty:
@@ -31,7 +26,7 @@ def calcular_curva_abc(df_estoque: pd.DataFrame) -> pd.DataFrame:
         .astype(float)
     )
 
-    # 2. Ordenar por Valor Total e calcular a participação
+    # Ordenar por Valor Total e calcular a participação
     df = df.sort_values(by='Valor_Numerico', ascending=False).reset_index(drop=True)
     df['Valor Acumulado'] = df['Valor_Numerico'].cumsum()
     
@@ -40,7 +35,7 @@ def calcular_curva_abc(df_estoque: pd.DataFrame) -> pd.DataFrame:
     df['% Valor Acumulado'] = (df['Valor Acumulado'] / valor_total_estoque) * 100
     df['% Item Acumulado'] = (df.index + 1) / len(df) * 100
 
-    # 3. Classificação ABC
+    # Classificação ABC
     def get_classe(percentual_valor):
         if percentual_valor <= 80:
             return 'A'
@@ -51,7 +46,7 @@ def calcular_curva_abc(df_estoque: pd.DataFrame) -> pd.DataFrame:
 
     df['Classe ABC'] = df['% Valor Acumulado'].apply(get_classe)
 
-    # 4. Formatação e seleção final
+    # Formatação e seleção final
     df['Valor Total'] = df['Valor_Numerico'].apply(lambda x: f"R$ {x:,.2f}".replace(",", "X").replace(".", ",").replace("X", "."))
     df['% Valor Acumulado'] = df['% Valor Acumulado'].apply(lambda x: f"{x:,.2f}%".replace(",", "X").replace(".", ",").replace("X", "."))
     df['% Item Acumulado'] = df['% Item Acumulado'].apply(lambda x: f"{x:,.2f}%".replace(",", "X").replace(".", ",").replace("X", "."))
@@ -79,7 +74,7 @@ def calcular_consumo_medio(historico_data: List[Dict[str, Any]]) -> Dict[str, fl
     
     return {} 
 
-# --- Função Principal de Renderização ---
+# Função Principal de Renderização
 
 def renderizar_relatorios(estoque_manager):
     """Renderiza a tab de Relatórios e Análises (Análise de Dados)."""
@@ -100,9 +95,8 @@ def renderizar_relatorios(estoque_manager):
          "Itens Críticos", "Análise de Valor (Curva ABC)", "Previsão de Reposição"]
     )
     
-    # -------------------------------------------------------------------------
-    # 1. Resumo Geral
-    # -------------------------------------------------------------------------
+    # Resumo Geral
+  
     if tipo_relatorio == "Resumo Geral":
         st.markdown("### 📋 Resumo Geral do Estoque")
         
@@ -114,18 +108,17 @@ def renderizar_relatorios(estoque_manager):
             st.write(f"- Valor Total de Estoque: **R$ {stats['valor_total']:,.2f}**")
             st.write(f"- Taxa de Ocupação (Em relação ao Máximo): **{stats['taxa_ocupacao']:,.2f}%**")
         
-    # Gráfico 1: Distribuição por Status (Pizza - Bom para proporção)
-        with col2: # Use a coluna correta (col_vis1 ou col2)
+    # Gráfico 1: Distribuição por Status (Pizza)
+        with col2: 
             st.markdown("#### 1. Distribuição por Status")
             status_counts = df_estoque['Status'].value_counts().reset_index()
             status_counts.columns = ['Status', 'Quantidade']
             
-            # --- NOVO MAPA DE CORES LÓGICO ---
             color_map = {
-                '🟢 Normal': '#2ca02c',        # Verde
-                '🟡 Abaixo do Mínimo': '#ff7f0e', # Laranja/Âmbar (Alerta)
-                '🔴 Sem Estoque': '#d62728',     # Vermelho (Crítico)
-                '🟠 Acima do Máximo': '#1f77b4'  # Azul (Atenção/Excesso)
+                '🟢 Normal': '#2ca02c',        
+                '🟡 Abaixo do Mínimo': '#ff7f0e', 
+                '🔴 Sem Estoque': '#d62728',     
+                '🟠 Acima do Máximo': '#1f77b4' 
             }
             
             fig_pie = px.pie(
@@ -133,17 +126,17 @@ def renderizar_relatorios(estoque_manager):
                 values='Quantidade',
                 names='Status',
                 title='Proporção de SKUs por Status de Estoque',
-                color='Status', # Define a coluna para mapeamento de cores
-                color_discrete_map=color_map, # Aplica o mapa de cores
+                color='Status', 
+                color_discrete_map=color_map, 
                 height=380
             )
             # Melhoria na legenda e borda
             fig_pie.update_traces(textinfo='percent+label', marker=dict(line=dict(color='#000000', width=1)))
             st.plotly_chart(fig_pie, use_container_width=True)
             
-    # -------------------------------------------------------------------------
-    # 2. Análise por Fornecedor
-    # -------------------------------------------------------------------------
+ 
+    # Análise por Fornecedor
+
     elif tipo_relatorio == "Análise por Fornecedor":
         st.markdown("### 🚚 Análise por Fornecedor")
         
@@ -182,9 +175,8 @@ def renderizar_relatorios(estoque_manager):
             fig_bar.update_layout(xaxis_title="Valor Total (R$)", yaxis_title="Fornecedor")
             st.plotly_chart(fig_bar, use_container_width=True)
 
-    # -------------------------------------------------------------------------
-    # 3. Análise por Localização
-    # -------------------------------------------------------------------------
+    # Análise por Localização
+  
     elif tipo_relatorio == "Análise por Localização":
         st.markdown("### 📍 Análise por Localização")
         
@@ -207,9 +199,9 @@ def renderizar_relatorios(estoque_manager):
         fig_bar_loc.update_layout(yaxis_title="Quantidade Total")
         st.plotly_chart(fig_bar_loc, use_container_width=True)
 
-    # -------------------------------------------------------------------------
-    # 4. Itens Críticos
-    # -------------------------------------------------------------------------
+  
+    #  Itens Críticos
+   
     elif tipo_relatorio == "Itens Críticos":
         st.markdown("### 🚨 Itens Abaixo e Sem Estoque")
         
@@ -225,9 +217,9 @@ def renderizar_relatorios(estoque_manager):
             st.dataframe(df_criticos[['Código', 'nome', 'Quantidade', 'Mínimo', 'Status', 'Fornecedor', 'Localização']], 
                          use_container_width=True, hide_index=True)
 
-    # -------------------------------------------------------------------------
-    # 5. Análise de Valor (Curva ABC)
-    # -------------------------------------------------------------------------
+ 
+    #  Análise de Valor (Curva ABC)
+   
     elif tipo_relatorio == "Análise de Valor (Curva ABC)":
         st.markdown("### 💰 Análise de Valor e Curva ABC (80/15/5)")
         
@@ -243,7 +235,7 @@ def renderizar_relatorios(estoque_manager):
             st.markdown("#### Tabela Curva ABC")
             df_grouped_abc = df_abc.groupby('Classe ABC').agg(
                 Total_SKUs=('Código', 'count'),
-                Porcentagem_Valor=('Valor Total', 'first') # Pega o valor acumulado do último item de cada classe
+                Porcentagem_Valor=('Valor Total', 'first') 
             ).reset_index()
 
             # Pega o último item (max) de cada classe para a % Valor Acumulado
@@ -284,9 +276,8 @@ def renderizar_relatorios(estoque_manager):
         st.dataframe(df_abc, use_container_width=True, hide_index=True)
 
 
-    # -------------------------------------------------------------------------
-    # 6. Previsão de Reposição (Modelo Simples de Demonstração)
-    # -------------------------------------------------------------------------
+    # Previsão de Reposição (Modelo Simples de Demonstração)
+ 
     elif tipo_relatorio == "Previsão de Reposição":
         st.markdown("### ⏳ Previsão de Reposição (Modelo Simples)")
         
@@ -314,7 +305,7 @@ def renderizar_relatorios(estoque_manager):
             if consumo_mensal_ideal <= 0: # Evita erro em caso de Max <= Min
                 continue 
             
-            consumo_diario = consumo_mensal_ideal / 30.0 # Dias do ciclo
+            consumo_diario = consumo_mensal_ideal / 30.0 
 
             # Quantidade que falta para atingir o Mínimo
             qtd_ate_minimo = quantidade_atual - minimo
@@ -323,9 +314,7 @@ def renderizar_relatorios(estoque_manager):
             if consumo_diario > 0:
                 dias_para_minimo = qtd_ate_minimo / consumo_diario
             else:
-                dias_para_minimo = 999 # Se não há consumo, dias é alto
-
-            # Só mostra itens que estão abaixo do estoque ideal (Máximo) e que vão atingir o mínimo em menos de 100 dias
+                dias_para_minimo = 999 
             if quantidade_atual < maximo and dias_para_minimo < 100:
                 df_reposicao.append({
                     "Código": item["Código"],

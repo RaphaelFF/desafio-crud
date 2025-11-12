@@ -12,7 +12,7 @@ def renderizar_dashboard(estoque_manager):
     df_estoque = estoque_manager.gerar_relatorio()
     stats = estoque_manager.obter_estatisticas()
     
-    # --- 1. Indicadores Chave ---
+    # Indicadores Chave
     col1, col2, col3, col4 = st.columns(4)
     
     col1.metric("SKUs Totais", stats['total_itens'])
@@ -34,10 +34,10 @@ def renderizar_dashboard(estoque_manager):
         .str.replace(',', '.', regex=False).str.strip().astype(float)
     )
 
-    # --- 2. Análise de Estoque e Valor ---
+    # Análise de Estoque e Valor
     col_vis1, col_vis2 = st.columns(2)
 
-    # Gráfico 1: Distribuição por Status (Pizza - Bom para proporção)
+    # Gráfico 1: Distribuição por Status (Pizza)
     with col_vis1:
         st.markdown("#### 1. Distribuição por Status")
         status_counts = df_estoque['Status'].value_counts().reset_index()
@@ -45,10 +45,10 @@ def renderizar_dashboard(estoque_manager):
         
         # Mapeamento de cores para status
         color_map = {
-            ' Normal': '#2ca02c',  # Verde
-            ' Abaixo do Mínimo': '#ff7f0e', # Amarelo/Laranja
-            ' Sem Estoque': '#d62728',     # Vermelho
-            ' Acima do Máximo': '#1f77b4'  # Azul
+            ' Normal': '#2ca02c', 
+            ' Abaixo do Mínimo': '#ff7f0e', 
+            ' Sem Estoque': '#d62728',  
+            ' Acima do Máximo': '#1f77b4'
         }
         
         fig_pie = px.pie(
@@ -63,7 +63,7 @@ def renderizar_dashboard(estoque_manager):
         fig_pie.update_traces(textinfo='percent+label', marker=dict(line=dict(color='#000000', width=1)))
         st.plotly_chart(fig_pie, use_container_width=True)
 
-    # Gráfico 2: Top 10 Itens por Valor Total (Barras Horizontais - Bom para ranking)
+    # Gráfico 2: Top 10 Itens por Valor Total (Barras Horizontais)
     with col_vis2:
         st.markdown("#### 2. Top 10 Itens por Valor Total")
         df_top = df_num.nlargest(10, 'Valor_Numerico')

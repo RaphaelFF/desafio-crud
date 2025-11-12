@@ -1,5 +1,3 @@
-# Arquivo: src/paginas/configuracoes.py (CORRIGIDO PARA SUPABASE)
-
 import streamlit as st
 import json
 from datetime import datetime
@@ -15,14 +13,7 @@ def renderizar_configuracoes(estoque_manager, tipo_usuario: str):
         
     st.markdown("### 💾 Status do Banco de Dados")
     
-    
-    
-    # --------------------------------------------------------------------------------
-    # Lógica de Backup/Restauração (Substituída por Status)
-    # --------------------------------------------------------------------------------
-    
     # Obter dados para exibir contagem (usando os novos métodos)
-    # A chamada get_estoque_data() retorna a lista de dicionários.
     estoque_data = estoque_manager.get_estoque_data()
     historico_data = estoque_manager.get_historico_data()
 

@@ -1,5 +1,3 @@
-# Arquivo: src/paginas/cadastro.py (CORRIGIDO PARA SUPABASE)
-
 import streamlit as st
 from typing import Dict
 
@@ -41,7 +39,6 @@ def renderizar_cadastro(estoque_manager, tipo_usuario: str):
                 st.error("O Código do Item e o Nome são obrigatórios.")
                 return
                 
-            # 2. CORREÇÃO: Verificar se o ID já existe usando o método do Supabase
             if estoque_manager.get_item_by_id(item_id) is not None:
                 st.error(f"O Código '{item_id}' já existe no estoque.")
                 return
@@ -58,4 +55,4 @@ def renderizar_cadastro(estoque_manager, tipo_usuario: str):
                 st.success(f"Item '{nome}' cadastrado com sucesso!")
                 st.balloons()
                 
-            # Se a função retornar False, o erro já foi exibido internamente
+   

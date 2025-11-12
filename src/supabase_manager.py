@@ -1,6 +1,4 @@
-# Arquivo: src/supabase_manager.py (FINAL - CORRIGIDO O ERRO DE CACHING)
-
-import streamlit as st
+mport streamlit as st
 import pandas as pd
 from supabase import create_client, Client
 from typing import Dict, List, Any, Optional
@@ -18,7 +16,7 @@ class SupabaseManager:
     """Gerencia a conexão e todas as operações CRUD com o Supabase."""
     
     def __init__(self, url: str, key: str):
-        # 1. Conexão com o Supabase
+   
         try:
             self.supabase: Client = create_client(url, key)
             st.cache_data.clear() 
@@ -28,15 +26,12 @@ class SupabaseManager:
             st.session_state.db_conectado = False
             return
         
-        # 2. Definição das tabelas
         self.TABELA_PRODUTOS = "produtos" 
         self.TABELA_HISTORICO = "historico"
         self.TABELA_USUARIOS = "usuarios" 
         pass 
 
-    # --- MÉTODOS DE BUSCA/LEITURA (READ) ---
-    
-    # CORREÇÃO: Argumento 'self' renomeado para '_self' para evitar erro de caching.
+
     @st.cache_data(ttl=60)
     def get_estoque_data(_self) -> List[Dict[str, Any]]:
         """Busca todos os itens da tabela 'produtos' no Supabase."""
@@ -47,7 +42,6 @@ class SupabaseManager:
             st.error(f"Erro ao buscar estoque: {e}")
             return []
 
-    # CORREÇÃO: Argumento 'self' renomeado para '_self'.
     @st.cache_data(ttl=5)
     def get_historico_data(_self) -> List[Dict[str, Any]]:
         """Busca todas as movimentações da tabela 'historico'."""
@@ -68,28 +62,23 @@ class SupabaseManager:
         except Exception:
             return None
 
-    # --- GERAR RELATÓRIO COMPLETO ---
-    
-    # CORREÇÃO: Argumento 'self' renomeado para '_self'.
     @st.cache_data(ttl=60)
     def gerar_relatorio(_self) -> pd.DataFrame:
         """Busca dados brutos, calcula o status e o valor total, e retorna um DataFrame formatado."""
-        data = _self.get_estoque_data() # Chama o método cacheado
+        data = _self.get_estoque_data() 
         
         if not data:
             return pd.DataFrame()
             
         df = pd.DataFrame(data)
         
-        # ... [Restante da lógica de cálculo de Status e Valor Total permanece o mesmo] ...
-        
-        # Limpeza de dados (garante tipos corretos após busca)
+        # Limpeza de dados 
         df['quantidade'] = pd.to_numeric(df['quantidade'], errors='coerce', downcast='integer')
         df['minimo'] = pd.to_numeric(df['minimo'], errors='coerce', downcast='integer')
         df['maximo'] = pd.to_numeric(df['maximo'], errors='coerce', downcast='integer')
         df['preco'] = pd.to_numeric(df['preco'], errors='coerce')
         
-        # 1. Cálculo de Status
+        # Cálculo de Status
         def calcular_status(row):
             if row['quantidade'] == 0:
                 return ' Sem Estoque'
@@ -101,14 +90,14 @@ class SupabaseManager:
 
         df['Status'] = df.apply(calcular_status, axis=1)
 
-        # 2. Cálculo do Valor Total
+        # Cálculo do Valor Total
         df['Valor Total'] = df['quantidade'] * df['preco']
         
-        # 3. Formatação
+        # Formatação
         df['Preço'] = df['preco'].apply(lambda x: f"R$ {x:,.2f}".replace(",", "X").replace(".", ",").replace("X", "."))
         df['Valor Total'] = df['Valor Total'].apply(lambda x: f"R$ {x:,.2f}".replace(",", "X").replace(".", ",").replace("X", "."))
 
-        # 4. Seleção e Renomeação de Colunas
+        # Seleção e Renomeação de Colunas
         df = df[['id', 'nome', 'unidade', 'quantidade', 'minimo', 'maximo', 'localizacao', 'fornecedor', 'preco', 'Status', 'Preço', 'Valor Total']].rename(columns={
             'id': 'Código',
             'nome': 'nome',
@@ -123,9 +112,7 @@ class SupabaseManager:
         
         return df
 
-    # --- MÉTODOS DE ESTATÍSTICAS E ALERTAS ---
 
-    # CORREÇÃO: Argumento 'self' renomeado para '_self'.
     @st.cache_data(ttl=60)
     def obter_estatisticas(_self) -> Dict:
         """Retorna estatísticas do estoque baseado no relatório."""
@@ -165,7 +152,7 @@ class SupabaseManager:
             "taxa_ocupacao": taxa_ocupacao
         }
 
-    # --- MÉTODOS CRUD (CREATE, UPDATE, DELETE) ---
+    # MÉTODOS CRUD (CREATE, UPDATE, DELETE) 
 
     def adicionar_item(self, item_id, nome, unidade, quantidade, minimo, maximo, localizacao, fornecedor, preco) -> bool:
         """Adiciona um novo item ao Supabase."""
@@ -215,7 +202,7 @@ class SupabaseManager:
             st.error(f"Erro ao excluir item: {e}")
             return False
 
-    # --- MÉTODOS DE MOVIMENTAÇÃO (UPDATE ESPECIALIZADO) ---
+    # MÉTODOS DE MOVIMENTAÇÃO (UPDATE ESPECIALIZADO)
 
     def _registrar_historico(self, item_id: str, nome: str, tipo: str, quantidade_final: int, observacao: str) -> bool:
         """Registra a movimentação na tabela de histórico (Não cacheado)."""
@@ -254,9 +241,8 @@ class SupabaseManager:
                 return self._registrar_historico(item_id, item_atual['nome'], "Saída", nova_quantidade, observacao)
         return False
 
-    # --- MÉTODOS DE AUTENTICAÇÃO ---
+    # MÉTODOS DE AUTENTICAÇÃO
 
-    # CORREÇÃO: Argumento 'self' renomeado para '_self'.
     @st.cache_data(ttl=3600)
     def buscar_usuario(_self, username: str) -> Optional[Dict[str, Any]]:
         """Busca o usuário pelo nome de usuário no Supabase."""
